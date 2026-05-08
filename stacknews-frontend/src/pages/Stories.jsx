@@ -7,6 +7,7 @@ const Stories = () => {
   const [loading, setLoading] = useState(true)
   const [scraping, setScraping] = useState(false)
   const [error, setError] = useState(null)
+  const [scrapeError, setScrapeError] = useState(null)
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const limit = 10
@@ -31,12 +32,13 @@ const Stories = () => {
 
   const handleScrape = async () => {
     setScraping(true)
+    setScrapeError(null)
     try {
       await api.post('/scrape')
       await fetchStories(1)
       setPage(1)
     } catch {
-      setError('Scraping failed.')
+      setScrapeError('Scraping failed. Please try again.')
     } finally {
       setScraping(false)
     }
@@ -84,6 +86,14 @@ const Stories = () => {
         </button>
       </div>
 
+      {/* Scrape error — only show when manually triggered */}
+      {scrapeError && (
+        <div className="mb-6 p-4 rounded-xl border border-red-500/30 bg-red-500/10 text-red-400 text-sm font-body">
+          {scrapeError}
+        </div>
+      )}
+
+      {/* Fetch error */}
       {error && (
         <div className="mb-6 p-4 rounded-xl border border-red-500/30 bg-red-500/10 text-red-400 text-sm font-body">
           {error}
